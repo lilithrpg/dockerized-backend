@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  user-management:
+    container_name: user-management
+    build:
+      context: user-management
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    image: user-management:latest
+    environment:
+      - NOTIFICATION_URL=localhost:8081/v1/notification/send
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:testdb
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_DATASOURCE_DRIVER=org.h2.Driver
+      - SPRING_DATASOURCE_DIALECT=org.hibernate.dialect.H2Dialect
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 3s
+        max_attempts: 5
+        window: 60s
+
+  email-notification:
+    container_name: notification-api
+    build:
+      context: notification-api
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_MAIL_HOST=127.0.0.1
+      - SPRING_MAIL_PORT=1025
+      - SPRING_MAIL_USERNAME=""
+      - SPRING_MAIL_PASSWORD=""
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 3s
+        max_attempts: 5
+        window: 60s
+    depends_on:
+      - smtp
+
+  smtp:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"

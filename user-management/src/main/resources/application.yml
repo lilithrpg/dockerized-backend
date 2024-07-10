@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: user-management
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    driverClassName: ${SPRING_DATASOURCE_DRIVER}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: ${SPRING_DATASOURCE_DIALECT}
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /api-docs
+notification:
+  url: ${NOTIFICATION_URL}
